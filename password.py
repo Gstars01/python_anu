@@ -17,6 +17,7 @@ motor = MotorSimGIF(-100, 0)
 state = 0
 # pass word 2, 4, 8, 0
 pw = [0, 0, 0, 0]
+ans = [2, 4, 8, 0]
 
 def move_motor(count):
     for j in range(count):
@@ -89,39 +90,30 @@ while True:
     else:
         motor.write(0,0)
     
-    if reset_sw.read()==1:
-        if pw[0]==2:
-            if pw[1]==4:
-                if pw[2]==8:
-                    if pw[3]==0:
-                        print("correct password")
-                        move_motor(10)
-                        for i in range(4):
-                            pw[i] = 0
-                            state = 0
-                    else:
-                        print("wrong password")
-                        for i in range(4):
-                            pw[i] = 0
-                            state = 0
-                else:
-                    print("wrong password")
-                    for i in range(3):
-                            pw[i] = 0
-                            state = 0
-            else:
-                print("wrong password")
-                for i in range(2):
-                            pw[i] = 0
-                            state = 0
+if reset_sw.read()==1:
+    count = 1
+    for i in pw:
+        if pw[0] == ans[0]:
+            count = count + 1
+            if count == 4:
+                print("correct password")
+                move_motor(10)
+                for i in range(4):
+                    pw[i] = 0
+                state = 0
+                count = 0
         else:
             print("wrong password")
             for i in range(1):
-                            pw[i] = 0
-                            state = 0
-            
-                  
-    else:
-        motor.write(0,0)
-    print(state)     
+                pw[i] = 0
+            state = 0
+            motor.write(0,0)
+            count = 0
+            break
+
+else:
+    motor.write(0,0)
+    print(state)
     time.sleep(0.5)
+
+            
